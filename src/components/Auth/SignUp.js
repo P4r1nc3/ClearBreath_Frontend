@@ -82,12 +82,12 @@ const SignUp = () => {
                                     </i>
                                 </div>
                                 <div className="text-center">
-                                    <button type="submit" className="btn btn-primary" style={{ textDecoration: 'none' }}>Sign Up</button>
+                                    <button type="submit" className="btn btn-primary">Sign Up</button>
                                 </div>
                             </form>
                         </div>
                         <div className="card-footer text-center">
-                            <p>Already have an account? <a href="/signin" className="link">Sign In</a></p>
+                            <p>Already have an account? <a href="/signin" className="link" style={{ textDecoration: 'none' }}>Sign In</a></p>
                         </div>
                     </div>
                 </div>
