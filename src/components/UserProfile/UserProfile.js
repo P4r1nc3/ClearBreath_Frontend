@@ -51,6 +51,7 @@ const UserProfile = () => {
             .then(response => {
                 if (response.ok) {
                     alert('Password changed successfully.');
+                    window.location.href = '/';
                 } else {
                     alert('Failed to change password.');
                 }
