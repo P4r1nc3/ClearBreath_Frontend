@@ -87,7 +87,7 @@ const SignUp = () => {
                             </form>
                         </div>
                         <div className="card-footer text-center">
-                            <p>Already have an account? <a href="/src/components/Auth/SignIn" className="link">Sign In</a></p>
+                            <p>Already have an account? <a href="/signin" className="link">Sign In</a></p>
                         </div>
                     </div>
                 </div>
