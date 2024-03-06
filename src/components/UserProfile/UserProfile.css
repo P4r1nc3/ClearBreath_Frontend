@@ -1,0 +1,65 @@
+/* UserProfile.css */
+.brand {
+    color: #2091d6;
+}
+
+body {
+    background-color: #f4f7f6;
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #2091d6;
+    color: black;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.card-body {
+    padding: 20px;
+    line-height: 1.5;
+}
+
+.btn-primary {
+    background-color: #2091d6;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    background-color: #1a7cb7;
+}
+
+.btn-danger {
+    margin-top: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger:hover {
+    background-color: #dc3545;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: #2091d6;
+    box-shadow: 0 0 0 0.2rem rgba(32, 145, 214, 0.25);
+}
