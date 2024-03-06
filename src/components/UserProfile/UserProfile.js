@@ -78,7 +78,7 @@ const UserProfile = () => {
                 if (response.ok) {
                     console.log('Profile deleted successfully.');
                     localStorage.removeItem('token');
-                    window.location.href = '/index.html';
+                    window.location.href = '/';
                 } else {
                     console.error('Failed to delete user profile!');
                 }
