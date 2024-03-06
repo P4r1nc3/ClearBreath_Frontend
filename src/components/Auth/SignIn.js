@@ -31,13 +31,19 @@ const SignIn = () => {
                 login(token);
                 navigate('/');
             } else {
-                alert('Sign In failed. Please check your information and try again.');
+                const errorResponse = await response.json();
+                if (response.status === 401 || response.status === 400) {
+                    alert(`${errorResponse.cause}`);
+                } else {
+                    alert('Sign In failed. Please check your information and try again.');
+                }
             }
         } catch (error) {
             console.error('Network error:', error);
             alert('Network error. Please try again later.');
         }
     };
+
 
     return (
         <div className="container mt-5">
