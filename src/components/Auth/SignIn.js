@@ -72,7 +72,7 @@ const SignIn = () => {
                             </form>
                         </div>
                         <div className="card-footer text-center">
-                            <p>Don't have an account? <a href="/signup" className="link">Sign Up</a></p>
+                            <p>Don't have an account? <a href="/signup" className="link" style={{ textDecoration: 'none' }}>Sign Up</a></p>
                         </div>
                     </div>
                 </div>
