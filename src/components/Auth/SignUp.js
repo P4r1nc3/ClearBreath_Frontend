@@ -82,7 +82,7 @@ const SignUp = () => {
                                     </i>
                                 </div>
                                 <div className="text-center">
-                                    <button type="submit" className="btn btn-primary">Sign Up</button>
+                                    <button type="submit" className="btn btn-primary" style={{ textDecoration: 'none' }}>Sign Up</button>
                                 </div>
                             </form>
                         </div>
