@@ -172,26 +172,28 @@ const Map = () => {
                 <ZoomControl position="bottomright" />
                 <MapEvents />
             </MapContainer>
-            {panelVisible && selectedMarker && (
-                <div className="side-panel open">
-                    <div className="marker-info-header">
-                        <button className="close-btn" onClick={closePanel}>&times;</button>
-                        <h3>Marker Info</h3>
-                        <p>Kontynent: {selectedMarker.continent}</p>
-                        <p>Miasto: {selectedMarker.city}</p>
-                        <p>Kraj: {selectedMarker.countryName}</p>
-                        <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
-                    </div>
-                    <div className="marker-info-content">
-                        <canvas ref={pm25ChartRef}></canvas>
-                        <canvas ref={pm10ChartRef}></canvas>
-                        <canvas ref={o3ChartRef}></canvas>
-                    </div>
-                    <div className="marker-info-footer">
-                        <button onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
-                    </div>
-                </div>
-            )}
+            <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
+                {selectedMarker && (
+                    <>
+                        <div className="marker-info-header">
+                            <button className="close-btn" onClick={closePanel}>&times;</button>
+                            <h3>Marker Info</h3>
+                            <p>Kontynent: {selectedMarker.continent}</p>
+                            <p>Miasto: {selectedMarker.city}</p>
+                            <p>Kraj: {selectedMarker.countryName}</p>
+                            <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
+                        </div>
+                        <div className="marker-info-content">
+                            <canvas ref={pm25ChartRef}></canvas>
+                            <canvas ref={pm10ChartRef}></canvas>
+                            <canvas ref={o3ChartRef}></canvas>
+                        </div>
+                        <div className="marker-info-footer">
+                            <button className="delete-btn" onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
+                        </div>
+                    </>
+                )}
+            </div>
         </>
     );
 };
