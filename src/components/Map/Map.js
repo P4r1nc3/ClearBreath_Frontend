@@ -1,13 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
+import Chart from 'chart.js/auto';
 import './Map.css';
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [panelVisible, setPanelVisible] = useState(false);
+    const [pollutionData, setPollutionData] = useState(null);
+
+    // Refs for the charts and their instances
+    const pm25ChartRef = useRef(null);
+    const pm10ChartRef = useRef(null);
+    const o3ChartRef = useRef(null);
+    const pm25ChartInstance = useRef(null);
+    const pm10ChartInstance = useRef(null);
+    const o3ChartInstance = useRef(null);
 
     const loadMarkers = () => {
         const token = localStorage.getItem('token');
@@ -77,6 +87,16 @@ const Map = () => {
             });
     };
 
+    const fetchPollutionData = (lat, lng) => {
+        const urlPollution = `http://localhost:8080/pollution/lat/${lat}/lng/${lng}`;
+        fetch(urlPollution)
+            .then(response => response.json())
+            .then(data => {
+                setPollutionData(data); // Update the state with fetched data
+            })
+            .catch(error => console.error('Error fetching pollution data:', error));
+    };
+
     const MapEvents = () => {
         useMapEvents({
             click: (e) => {
@@ -86,12 +106,9 @@ const Map = () => {
         return null;
     };
 
-    useEffect(() => {
-        loadMarkers();
-    }, []);
-
     const handleMarkerClick = (marker) => {
         setSelectedMarker(marker);
+        fetchPollutionData(marker.lat, marker.lng);
         setPanelVisible(true);
     };
 
@@ -99,9 +116,51 @@ const Map = () => {
         setPanelVisible(false);
     };
 
+    const createOrUpdatePollutionChart = (chartRef, chartInstanceRef, label, data) => {
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
+
+        const chartContext = chartRef.getContext('2d');
+        if (chartContext) {
+            chartInstanceRef.current = new Chart(chartContext, {
+                type: 'bar',
+                data: {
+                    labels: data.map(day => day.day),
+                    datasets: [{
+                        label,
+                        data: data.map(day => day.avg),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (pollutionData) {
+            createOrUpdatePollutionChart(pm25ChartRef.current, pm25ChartInstance, 'PM 2.5 Pollution Data', pollutionData.data.forecast.daily.pm25);
+            createOrUpdatePollutionChart(pm10ChartRef.current, pm10ChartInstance, 'PM 10 Pollution Data', pollutionData.data.forecast.daily.pm10);
+            createOrUpdatePollutionChart(o3ChartRef.current, o3ChartInstance, 'O3 Pollution Data', pollutionData.data.forecast.daily.o3);
+        }
+    }, [pollutionData]);
+
+    useEffect(() => {
+        loadMarkers();
+    }, []);
+
     return (
         <>
-            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 55px)', width: '100%' }} zoomControl={false}>
+            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 56px)', width: '100%' }} zoomControl={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; ClearBreath'
@@ -116,13 +175,22 @@ const Map = () => {
             <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
                 {selectedMarker && (
                     <>
-                        <button className="close-btn" onClick={closePanel}>&times;</button>
-                        <h3>Marker Info</h3>
-                        <p>Kontynent: {selectedMarker.continent}</p>
-                        <p>Miasto: {selectedMarker.city}</p>
-                        <p>Kraj: {selectedMarker.countryName}</p>
-                        <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
-                        <button onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
+                        <div className="marker-info-header">
+                            <button className="close-btn" onClick={closePanel}>&times;</button>
+                            <h3>Marker Info</h3>
+                            <p>Kontynent: {selectedMarker.continent}</p>
+                            <p>Miasto: {selectedMarker.city}</p>
+                            <p>Kraj: {selectedMarker.countryName}</p>
+                            <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
+                        </div>
+                        <div className="marker-info-content">
+                            <canvas ref={pm25ChartRef}></canvas>
+                            <canvas ref={pm10ChartRef}></canvas>
+                            <canvas ref={o3ChartRef}></canvas>
+                        </div>
+                        <div className="marker-info-footer">
+                            <button className="delete-btn" onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
+                        </div>
                     </>
                 )}
             </div>
