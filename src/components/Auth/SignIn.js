@@ -57,7 +57,7 @@ const SignIn = () => {
                                     <label htmlFor="password">Password</label>
                                     <input type={passwordShown ? "text" : "password"} className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required />
                                     <i onClick={togglePasswordVisibility} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={passwordShown ? faEyeSlash : faEye} />
+                                        <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
                                     </i>
                                 </div>
                                 <div className="text-center mb-3">

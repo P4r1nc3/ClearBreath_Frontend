@@ -78,7 +78,7 @@ const SignUp = () => {
                                     <label htmlFor="password">Password</label>
                                     <input type={passwordShown ? "text" : "password"} className="form-control" id="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" required style={{ paddingRight: '40px' }} />
                                     <i onClick={togglePasswordVisibility} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={passwordShown ? faEyeSlash : faEye} />
+                                        <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
                                     </i>
                                 </div>
                                 <div className="text-center">
