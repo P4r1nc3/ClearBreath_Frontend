@@ -114,14 +114,14 @@ const UserProfile = () => {
                                     <label htmlFor="currentPassword">Current Password</label>
                                     <input type={showCurrentPassword ? "text" : "password"} className="form-control" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
                                     <i onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showCurrentPassword ? faEyeSlash : faEye} />
+                                        <FontAwesomeIcon icon={showCurrentPassword ? faEye : faEyeSlash} />
                                     </i>
                                 </div>
                                 <div className="form-group position-relative">
                                     <label htmlFor="newPassword">New Password</label>
                                     <input type={showNewPassword ? "text" : "password"} className="form-control" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                                     <i onClick={() => setShowNewPassword(!showNewPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
+                                        <FontAwesomeIcon icon={showNewPassword ? faEye : faEyeSlash} />
                                     </i>
                                 </div>
                                 <button type="submit" className="btn btn-primary">Submit Change</button>
