@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './UserProfile.css';
 import { fetchUserData, changeUserPassword, deleteUserProfile } from '../../api/user';
 import PasswordInput from '../PasswordInput';
 
@@ -53,31 +52,31 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <div className="row">
-                <div className="col-md-6 mb-4">
-                    <div className="card profile-card">
-                        <div className="card-header">User Profile</div>
-                        <div className="card-body">
-                            <p><strong>First Name:</strong> {userDetails.firstName}</p>
-                            <p><strong>Last Name:</strong> {userDetails.lastName}</p>
-                            <p><strong>Email:</strong> {userDetails.email}</p>
-                            <p><strong>Account Creation Date:</strong> {userDetails.createdAt}</p>
-                            <button className="btn btn-danger" onClick={handleDeleteUser}>Delete Profile</button>
-                        </div>
+        <div className="container mx-auto px-4 py-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white rounded-lg shadow-md">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
+                    </div>
+                    <div className="p-6">
+                        <p className="text-gray-700"><strong>First Name:</strong> {userDetails.firstName}</p>
+                        <p className="text-gray-700"><strong>Last Name:</strong> {userDetails.lastName}</p>
+                        <p className="text-gray-700"><strong>Email:</strong> {userDetails.email}</p>
+                        <p className="text-gray-700"><strong>Account Creation Date:</strong> {userDetails.createdAt}</p>
+                        <button className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:bg-red-600" onClick={handleDeleteUser}>Delete Profile</button>
                     </div>
                 </div>
 
-                <div className="col-md-6 mb-4">
-                    <div className="card profile-card">
-                        <div className="card-header">Change Password</div>
-                        <div className="card-body">
-                            <form onSubmit={handleChangePassword}>
-                                <PasswordInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-                                <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-                                <button type="submit" className="btn btn-primary">Submit Change</button>
-                            </form>
-                        </div>
+                <div className="bg-white rounded-lg shadow-md">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <h2 className="text-xl font-semibold text-gray-800">Change Password</h2>
+                    </div>
+                    <div className="p-6">
+                        <form onSubmit={handleChangePassword}>
+                            <PasswordInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" />
+                            <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
+                            <button type="submit" className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit Change</button>
+                        </form>
                     </div>
                 </div>
             </div>
