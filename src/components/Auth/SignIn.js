@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { signIn } from '../../api/auth';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -18,24 +19,12 @@ const SignIn = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/auth/signin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (response.ok) {
-                const { token } = await response.json();
-                login(token);
-                navigate('/');
-            } else {
-                alert('Sign In failed. Please check your information and try again.');
-            }
+            const data = await signIn(email, password);
+            login(data.token);
+            navigate('/');
         } catch (error) {
-            console.error('Network error:', error);
-            alert('Network error. Please try again later.');
+            console.error('Sign In error:', error.message);
+            alert('Sign In failed. Please check your information and try again.');
         }
     };
 
