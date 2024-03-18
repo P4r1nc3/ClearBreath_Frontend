@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './UserProfile.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { fetchUserData, changeUserPassword, deleteUserProfile } from '../../api/user';
+import PasswordInput from '../PasswordInput';
 
 const UserProfile = () => {
     const [userDetails, setUserDetails] = useState({
@@ -11,10 +10,9 @@ const UserProfile = () => {
         email: '',
         createdAt: '',
     });
+
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
 
     useEffect(() => {
         fetchUserData()
@@ -75,20 +73,8 @@ const UserProfile = () => {
                         <div className="card-header">Change Password</div>
                         <div className="card-body">
                             <form onSubmit={handleChangePassword}>
-                                <div className="form-group position-relative">
-                                    <label htmlFor="currentPassword">Current Password</label>
-                                    <input type={showCurrentPassword ? "text" : "password"} className="form-control" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-                                    <i onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showCurrentPassword ? faEye : faEyeSlash} />
-                                    </i>
-                                </div>
-                                <div className="form-group position-relative">
-                                    <label htmlFor="newPassword">New Password</label>
-                                    <input type={showNewPassword ? "text" : "password"} className="form-control" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-                                    <i onClick={() => setShowNewPassword(!showNewPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showNewPassword ? faEye : faEyeSlash} />
-                                    </i>
-                                </div>
+                                <PasswordInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                                <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                                 <button type="submit" className="btn btn-primary">Submit Change</button>
                             </form>
                         </div>
