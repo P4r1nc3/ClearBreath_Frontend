@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { getTokenFromLocalStorage } from "../helpers/tokenStorage";
 
 const BASE_URL = 'http://localhost:8080';
 
 // Generic API service function
-const apiRequest = async (url, method, token, data = null) => {
+const apiRequest = async (url, method, data = null) => {
+    const token = getTokenFromLocalStorage();
     const options = {
         method: method,
         headers: {
@@ -26,17 +28,17 @@ const apiRequest = async (url, method, token, data = null) => {
     }
 };
 
-export const saveMarker = async (token, lat, lng) => {
+export const saveMarker = async (lat, lng) => {
     const url = `${BASE_URL}/markers/lat/${lat}/lng/${lng}`;
-    return await apiRequest(url, 'POST', token);
+    return await apiRequest(url, 'POST');
 };
 
-export const getMarkers = async (token) => {
+export const getMarkers = async () => {
     const url = `${BASE_URL}/markers`;
-    return await apiRequest(url, 'GET', token);
+    return await apiRequest(url, 'GET');
 };
 
-export const deleteMarker = async (token, lat, lng) => {
+export const deleteMarker = async (lat, lng) => {
     const url = `${BASE_URL}/markers/lat/${lat}/lng/${lng}`;
-    await apiRequest(url, 'DELETE', token);
+    await apiRequest(url, 'DELETE');
 };
