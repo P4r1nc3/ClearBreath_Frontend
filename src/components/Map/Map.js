@@ -18,9 +18,8 @@ const Map = () => {
     const o3ChartRef = useRef(null);
 
     const handleLoadMarkers = async () => {
-        const token = localStorage.getItem('token');
         try {
-            const markers = await getMarkers(token);
+            const markers = await getMarkers();
             setMarkers(markers);
         } catch (error) {
             console.error('Failed to load markers:', error);
@@ -28,9 +27,8 @@ const Map = () => {
     };
 
     const handleSaveMarker = async (lat, lng) => {
-        const token = localStorage.getItem('token');
         try {
-            const savedMarker = await saveMarker(token, lat, lng);
+            const savedMarker = await saveMarker(lat, lng);
             console.log('Marker saved successfully:', savedMarker);
             setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
         } catch (error) {
@@ -39,9 +37,8 @@ const Map = () => {
     };
 
     const handleDeleteMarker = async (lat, lng) => {
-        const token = localStorage.getItem('token');
         try {
-            await deleteMarker(token, lat, lng);
+            await deleteMarker(lat, lng);
             console.log('Marker deleted successfully');
             handleLoadMarkers();
         } catch (error) {

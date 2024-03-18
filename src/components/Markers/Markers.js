@@ -6,11 +6,10 @@ import { getMarkers, deleteMarker } from '../../api/marker';
 
 const Markers = () => {
     const [markers, setMarkers] = useState([]);
-    const token = localStorage.getItem('token');
 
     const handleLoadMarkers = async () => {
         try {
-            const markersData = await getMarkers(token);
+            const markersData = await getMarkers();
             setMarkers(markersData);
         } catch (error) {
             console.error('Failed to load markers:', error);
@@ -19,7 +18,7 @@ const Markers = () => {
 
     const handleDeleteMarker = async (lat, lng) => {
         try {
-            await deleteMarker(token, lat, lng);
+            await deleteMarker(lat, lng);
             console.log('Marker deleted successfully');
             handleLoadMarkers();
         } catch (error) {
