@@ -36,11 +36,11 @@ const SignUp = () => {
                         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-900">First name</label>
-                                <input type="email" name="firstName" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="John" required />
+                                <input type="firstName" name="firstName" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="John" required />
                             </div>
                             <div>
                                 <label htmlFor="lastName" className="block mb-2 text-sm font-medium text-gray-900">Last name</label>
-                                <input type="email" name="lastName" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Smith" required />
+                                <input type="lastName" name="lastName" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Smith" required />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
@@ -59,7 +59,7 @@ const SignUp = () => {
                                 </div>
                             </div>
                             <button type="submit" className="w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                Sign In
+                                Sign Up
                             </button>
                             <p className="text-sm font-light text-gray-500">
                                 Already have an account? <a href="/signin" className="font-medium text-primary-600 hover:underline">Sign In here</a>
