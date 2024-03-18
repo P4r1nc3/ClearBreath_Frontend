@@ -8,7 +8,7 @@ const Markers = () => {
     const [markers, setMarkers] = useState([]);
     const token = localStorage.getItem('token');
 
-    const loadMarkers = async () => {
+    const handleLoadMarkers = async () => {
         try {
             const markersData = await getMarkers(token);
             setMarkers(markersData);
@@ -21,14 +21,14 @@ const Markers = () => {
         try {
             await deleteMarker(token, lat, lng);
             console.log('Marker deleted successfully');
-            loadMarkers();
+            handleLoadMarkers();
         } catch (error) {
             console.error('Failed to delete marker:', error);
         }
     };
 
     useEffect(() => {
-        loadMarkers();
+        handleLoadMarkers();
     }, []);
 
     return (
