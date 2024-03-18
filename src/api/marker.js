@@ -2,7 +2,16 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080';
 
-const request = async (url, options) => {
+// Generic API service function
+const apiRequest = async (url, method, token, data = null) => {
+    const options = {
+        method: method,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        data: data,
+    };
     try {
         const response = await axios(url, options);
         return response.data;
@@ -19,24 +28,10 @@ const request = async (url, options) => {
 
 export const getMarkers = async (token) => {
     const url = `${BASE_URL}/markers`;
-    const options = {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    };
-    return await request(url, options);
+    return await apiRequest(url, 'GET', token);
 };
 
 export const deleteMarker = async (token, lat, lng) => {
     const url = `${BASE_URL}/markers/lat/${lat}/lng/${lng}`;
-    const options = {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    };
-    await request(url, options);
+    await apiRequest(url, 'DELETE', token);
 };
