@@ -10,21 +10,26 @@ const PasswordInput = ({ value, onChange }) => {
     };
 
     return (
-        <div className="form-group mb-4 position-relative">
-            <label htmlFor="password">Password</label>
-            <input
-                type={passwordShown ? "text" : "password"}
-                className="form-control"
-                id="password"
-                value={value}
-                onChange={onChange}
-                placeholder="Enter your password"
-                required
-                style={{ paddingRight: '40px' }}
-            />
-            <i onClick={togglePasswordVisibility} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
-            </i>
+        <div className="mb-4 relative">
+            <div className="relative">
+                <input
+                    type={passwordShown ? "text" : "password"}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10"
+                    id="password"
+                    value={value}
+                    onChange={onChange}
+                    placeholder="••••••••••"
+                    required
+                />
+                <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
+                    style={{ top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                >
+                    <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
+                </button>
+            </div>
         </div>
     );
 };
