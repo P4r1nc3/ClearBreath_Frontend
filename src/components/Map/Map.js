@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
 import './Map.css';
 import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
-import { fetchPollutionData } from '../../api/pollution'; // Import fetchPollutionData function
+import { fetchPollutionData } from '../../api/pollution';
 import PollutionCharts from './PollutionCharts';
 
 const Map = () => {
@@ -59,7 +59,7 @@ const Map = () => {
     const handleMarkerClick = async (marker) => {
         setSelectedMarker(marker);
         try {
-            const data = await fetchPollutionData(marker.lat, marker.lng); // Use fetchPollutionData function
+            const data = await fetchPollutionData(marker.lat, marker.lng);
             setPollutionData(data);
             setPanelVisible(true);
         } catch (error) {
