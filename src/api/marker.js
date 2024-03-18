@@ -26,9 +26,9 @@ const apiRequest = async (url, method, token, data = null) => {
     }
 };
 
-export const saveMarker = async (token, markerData) => {
-    const url = `${BASE_URL}/markers`;
-    return await apiRequest(url, 'POST', token, markerData);
+export const saveMarker = async (token, lat, lng) => {
+    const url = `${BASE_URL}/markers/lat/${lat}/lng/${lng}`;
+    return await apiRequest(url, 'POST', token);
 };
 
 export const getMarkers = async (token) => {
