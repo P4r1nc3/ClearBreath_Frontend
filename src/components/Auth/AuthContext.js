@@ -1,25 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { storeTokenInLocalStorage, getTokenFromLocalStorage, removeTokenFromLocalStorage } from '../../helpers/tokenStorage';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [loggedIn, setLoggedIn] = useState(localStorage.getItem('token') ? true : false);
+    const [loggedIn, setLoggedIn] = useState(getTokenFromLocalStorage() ? true : false);
 
     const login = (token) => {
-        localStorage.setItem('token', token);
+        storeTokenInLocalStorage(token);
         setLoggedIn(true);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        removeTokenFromLocalStorage();
         setLoggedIn(false);
     };
 
     useEffect(() => {
         const handleStorageChange = () => {
-            setLoggedIn(!!localStorage.getItem('token'));
+            setLoggedIn(!!getTokenFromLocalStorage());
         };
         window.addEventListener('storage', handleStorageChange);
         return () => window.removeEventListener('storage', handleStorageChange);
