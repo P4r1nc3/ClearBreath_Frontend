@@ -22,7 +22,7 @@ const Navbar = () => {
             <div className="mx-auto px-4 py-3 max-w-screen-xl sm:px-6 lg:px-8 max-w-screen-2xl" >
                 <div className="flex justify-between">
                     <div className="flex-shrink-0">
-                        <Link to="/" className="text-lg font-bold text-gray-800"><span className="text-blue-400">Clear</span>Breath</Link>
+                        <Link to="/" className="text-lg text-gray-800"><span className="text-blue-400">Clear</span>Breath</Link>
                     </div>
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-4">
