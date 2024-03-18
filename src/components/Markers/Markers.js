@@ -30,7 +30,7 @@ const Markers = () => {
     }, []);
 
     return (
-        <div className="container mx-auto mt-4">
+        <div className="container mx-auto mt-4 max-w-screen-lg">
             {markers.map((marker, index) => (
                 <div key={index} className="marker-item grid grid-cols-5 items-center p-4 mb-4 rounded shadow-md hover:shadow-lg bg-gray-100">
                     <div className="marker-icon">
