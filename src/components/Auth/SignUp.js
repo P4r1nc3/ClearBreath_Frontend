@@ -3,21 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { signUp } from '../../api/auth';
 
 const SignUp = () => {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-    });
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     const [passwordShown, setPasswordShown] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
-    };
 
     const togglePasswordVisibility = () => {
         setPasswordShown(passwordShown => !passwordShown);
@@ -26,29 +22,12 @@ const SignUp = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                const { token } = await response.json();
-                login(token);
-                navigate('/');
-            } else {
-                const errorResponse = await response.json();
-                if (response.status === 401 || response.status === 400) {
-                    alert(`${errorResponse.cause}`);
-                } else {
-                    alert('Sign In failed. Please check your information and try again.');
-                }
-            }
+            const data = await signUp(firstName, lastName, email, password);
+            login(data.token);
+            navigate('/');
         } catch (error) {
-            console.error('Network error:', error);
-            alert('Network error. Please try again later.');
+            console.error('Sign Up error:', error.message);
+            alert('Sign Up failed. Please check your information and try again.');
         }
     };
 
@@ -64,19 +43,19 @@ const SignUp = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group mb-3">
                                     <label htmlFor="firstName">First Name</label>
-                                    <input type="text" className="form-control" id="firstName" value={formData.firstName} onChange={handleChange} placeholder="Enter your first name" required />
+                                    <input type="text" className="form-control" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Enter your first name" required />
                                 </div>
                                 <div className="form-group mb-3">
                                     <label htmlFor="lastName">Last Name</label>
-                                    <input type="text" className="form-control" id="lastName" value={formData.lastName} onChange={handleChange} placeholder="Enter your last name" required />
+                                    <input type="text" className="form-control" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Enter your last name" required />
                                 </div>
                                 <div className="form-group mb-3">
                                     <label htmlFor="email">Email</label>
-                                    <input type="email" className="form-control" id="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" required />
+                                    <input type="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required />
                                 </div>
                                 <div className="form-group mb-4 position-relative">
                                     <label htmlFor="password">Password</label>
-                                    <input type={passwordShown ? "text" : "password"} className="form-control" id="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" required style={{ paddingRight: '40px' }} />
+                                    <input type={passwordShown ? "text" : "password"} className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required style={{ paddingRight: '40px' }} />
                                     <i onClick={togglePasswordVisibility} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
                                         <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
                                     </i>
