@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
 import './Map.css';
 import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
+import { fetchPollutionData } from '../../api/pollution'; // Import fetchPollutionData function
 import PollutionCharts from './PollutionCharts';
 
 const Map = () => {
@@ -46,16 +47,6 @@ const Map = () => {
         }
     };
 
-    const fetchPollutionData = (lat, lng) => {
-        const urlPollution = `http://localhost:8080/pollution/lat/${lat}/lng/${lng}`;
-        fetch(urlPollution)
-            .then(response => response.json())
-            .then(data => {
-                setPollutionData(data);
-            })
-            .catch(error => console.error('Error fetching pollution data:', error));
-    };
-
     const MapEvents = () => {
         useMapEvents({
             click: (e) => {
@@ -65,10 +56,15 @@ const Map = () => {
         return null;
     };
 
-    const handleMarkerClick = (marker) => {
+    const handleMarkerClick = async (marker) => {
         setSelectedMarker(marker);
-        fetchPollutionData(marker.lat, marker.lng);
-        setPanelVisible(true);
+        try {
+            const data = await fetchPollutionData(marker.lat, marker.lng); // Use fetchPollutionData function
+            setPollutionData(data);
+            setPanelVisible(true);
+        } catch (error) {
+            console.error('Error fetching pollution data:', error);
+        }
     };
 
     const closePanel = () => {
@@ -105,10 +101,7 @@ const Map = () => {
                             <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
                         </div>
                         <div className="marker-info-content">
-                            <PollutionCharts
-                                pollutionData={pollutionData}
-                                refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}
-                            />
+                            <PollutionCharts pollutionData={pollutionData} refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}/>
                         </div>
                         <div className="marker-info-footer">
                             <button className="delete-btn" onClick={() => { handleDeleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
