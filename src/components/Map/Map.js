@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
 import Chart from 'chart.js/auto';
 import './Map.css';
+import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -19,22 +20,14 @@ const Map = () => {
     const pm10ChartInstance = useRef(null);
     const o3ChartInstance = useRef(null);
 
-    const loadMarkers = () => {
+    const handleLoadMarkers = async () => {
         const token = localStorage.getItem('token');
-        const urlGetMarker = 'http://localhost:8080/markers';
-
-        fetch(urlGetMarker, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(setMarkers)
-            .catch(error => {
-                console.error('Failed to load markers:', error)
-            });
+        try {
+            const markers = await getMarkers(token);
+            setMarkers(markers);
+        } catch (error) {
+            console.error('Failed to load markers:', error);
+        }
     };
 
     const saveMarker = (lat, lng) => {
@@ -62,29 +55,15 @@ const Map = () => {
             });
     };
 
-    const deleteMarker = (lat, lng) => {
+    const handleDeleteMarker = async (lat, lng) => {
         const token = localStorage.getItem('token');
-        const urlDeleteMarker = `http://localhost:8080/markers/lat/${lat}/lng/${lng}`;
-
-        fetch(urlDeleteMarker, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => {
-                if (response.status === 204) {
-                    console.log('Marker deleted successfully');
-                    loadMarkers();
-                } else {
-                    console.error('Failed to delete marker');
-                    response.json().then(data => console.error(data.message));
-                }
-            })
-            .catch(error => {
-                console.error('Network error:', error);
-            });
+        try {
+            await deleteMarker(token, lat, lng);
+            console.log('Marker deleted successfully');
+            handleLoadMarkers();
+        } catch (error) {
+            console.error('Failed to delete marker:', error.message);
+        }
     };
 
     const fetchPollutionData = (lat, lng) => {
@@ -92,7 +71,7 @@ const Map = () => {
         fetch(urlPollution)
             .then(response => response.json())
             .then(data => {
-                setPollutionData(data); // Update the state with fetched data
+                setPollutionData(data);
             })
             .catch(error => console.error('Error fetching pollution data:', error));
     };
@@ -155,7 +134,7 @@ const Map = () => {
     }, [pollutionData]);
 
     useEffect(() => {
-        loadMarkers();
+        handleLoadMarkers();
     }, []);
 
     return (
@@ -189,7 +168,7 @@ const Map = () => {
                             <canvas ref={o3ChartRef}></canvas>
                         </div>
                         <div className="marker-info-footer">
-                            <button className="delete-btn" onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
+                            <button className="delete-btn" onClick={() => { handleDeleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
                         </div>
                     </>
                 )}
