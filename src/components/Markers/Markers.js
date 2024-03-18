@@ -2,51 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import './Markers.css';
+import { getMarkers, deleteMarker } from '../../api/marker';
 
 const Markers = () => {
     const [markers, setMarkers] = useState([]);
+    const token = localStorage.getItem('token');
 
-    const loadMarkers = () => {
-        const token = localStorage.getItem('token');
-        const urlGetMarker = 'http://localhost:8080/markers';
-
-        fetch(urlGetMarker, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(setMarkers)
-            .catch(error => {
-                console.error('Failed to load markers:', error)
-            });
+    const loadMarkers = async () => {
+        try {
+            const markersData = await getMarkers(token);
+            setMarkers(markersData);
+        } catch (error) {
+            console.error('Failed to load markers:', error);
+        }
     };
 
-    const deleteMarker = (lat, lng) => {
-        const token = localStorage.getItem('token');
-        const urlDeleteMarker = `http://localhost:8080/markers/lat/${lat}/lng/${lng}`;
-
-        fetch(urlDeleteMarker, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => {
-                if (response.status === 204) {
-                    console.log('Marker deleted successfully');
-                    loadMarkers();
-                } else {
-                    console.error('Failed to delete marker');
-                    response.json().then(data => console.error(data.message));
-                }
-            })
-            .catch(error => {
-                console.error('Network error:', error);
-            });
+    const handleDeleteMarker = async (lat, lng) => {
+        try {
+            await deleteMarker(token, lat, lng);
+            console.log('Marker deleted successfully');
+            loadMarkers();
+        } catch (error) {
+            console.error('Failed to delete marker:', error);
+        }
     };
 
     useEffect(() => {
@@ -65,7 +43,7 @@ const Markers = () => {
                     <div className="marker-text">{marker.city}</div>
                     <div className="marker-text">Lat: {marker.lat.toFixed(4)}, Lng: {marker.lng.toFixed(4)}</div>
                     <div>
-                        <button className="btn btn-danger btn-sm delete-btn" onClick={() => deleteMarker(marker.lat, marker.lng)}>Delete</button>
+                        <button className="btn btn-danger btn-sm delete-btn" onClick={() => handleDeleteMarker(marker.lat, marker.lng)}>Delete</button>
                     </div>
                 </div>
             ))}
