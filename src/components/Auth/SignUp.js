@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import PasswordInput from '../PasswordInput';
 import { signUp } from '../../api/auth';
 
 const SignUp = () => {
@@ -11,13 +10,8 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [passwordShown, setPasswordShown] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
-
-    const togglePasswordVisibility = () => {
-        setPasswordShown(passwordShown => !passwordShown);
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -53,13 +47,7 @@ const SignUp = () => {
                                     <label htmlFor="email">Email</label>
                                     <input type="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required />
                                 </div>
-                                <div className="form-group mb-4 position-relative">
-                                    <label htmlFor="password">Password</label>
-                                    <input type={passwordShown ? "text" : "password"} className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required style={{ paddingRight: '40px' }} />
-                                    <i onClick={togglePasswordVisibility} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={passwordShown ? faEye : faEyeSlash} />
-                                    </i>
-                                </div>
+                                <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
                                 <div className="text-center">
                                     <button type="submit" className="btn btn-primary">Sign Up</button>
                                 </div>
