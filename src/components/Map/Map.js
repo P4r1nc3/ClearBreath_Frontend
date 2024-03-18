@@ -77,7 +77,7 @@ const Map = () => {
 
     return (
         <>
-            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 56px)', width: '100%' }} zoomControl={false}>
+            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 52px)', width: '100%' }} zoomControl={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; ClearBreath'
