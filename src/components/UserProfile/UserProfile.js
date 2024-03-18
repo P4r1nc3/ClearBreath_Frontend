@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './UserProfile.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { fetchUserData, changeUserPassword, deleteUserProfile } from '../../api/user';
+import PasswordInput from '../PasswordInput';
 
 const UserProfile = () => {
     const [userDetails, setUserDetails] = useState({
@@ -10,20 +10,12 @@ const UserProfile = () => {
         email: '',
         createdAt: '',
     });
+
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
 
-    const fetchUserData = () => {
-        const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/users', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        })
-            .then(response => response.json())
+    useEffect(() => {
+        fetchUserData()
             .then(data => {
                 setUserDetails({
                     firstName: data.firstName,
@@ -33,61 +25,32 @@ const UserProfile = () => {
                 });
             })
             .catch(error => console.error('Failed to fetch user data!', error));
-    };
+    }, []);
 
-    const handleChangePassword = (event) => {
+    const handleChangePassword = async (event) => {
         event.preventDefault();
-        const token = localStorage.getItem('token');
-        const urlChangePassword = 'http://localhost:8080/users/change-password';
-
-        fetch(urlChangePassword, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({ oldPassword: currentPassword, newPassword: newPassword }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Password changed successfully.');
-                } else {
-                    alert('Failed to change password.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error)
-            });
+        try {
+            await changeUserPassword(currentPassword, newPassword);
+            alert('Password changed successfully.');
+        } catch (error) {
+            console.error('Failed to change password:', error);
+            alert('Failed to change password. Please try again.');
+        }
     };
 
-    const handleDeleteUser = () => {
+    const handleDeleteUser = async () => {
         if (!window.confirm('Are you sure you want to delete your profile?')) {
             return;
         }
-
-        const token = localStorage.getItem('token');
-        const urlDeleteUser = 'http://localhost:8080/users';
-
-        fetch(urlDeleteUser, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Profile deleted successfully.');
-                    localStorage.removeItem('token');
-                    window.location.href = '/index.html';
-                } else {
-                    console.error('Failed to delete user profile!');
-                }
-            });
+        try {
+            await deleteUserProfile();
+            console.log('Profile deleted successfully.');
+            localStorage.removeItem('token');
+            window.location.href = '/signin';
+        } catch (error) {
+            console.error('Failed to delete user profile!', error);
+        }
     };
-
-    useEffect(() => {
-        fetchUserData();
-    }, []);
 
     return (
         <div className="container mt-5">
@@ -110,20 +73,8 @@ const UserProfile = () => {
                         <div className="card-header">Change Password</div>
                         <div className="card-body">
                             <form onSubmit={handleChangePassword}>
-                                <div className="form-group position-relative">
-                                    <label htmlFor="currentPassword">Current Password</label>
-                                    <input type={showCurrentPassword ? "text" : "password"} className="form-control" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-                                    <i onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showCurrentPassword ? faEyeSlash : faEye} />
-                                    </i>
-                                </div>
-                                <div className="form-group position-relative">
-                                    <label htmlFor="newPassword">New Password</label>
-                                    <input type={showNewPassword ? "text" : "password"} className="form-control" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-                                    <i onClick={() => setShowNewPassword(!showNewPassword)} className="password-icon position-absolute" style={{ color: 'grey', top: '50%', right: '10px', cursor: 'pointer' }}>
-                                        <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
-                                    </i>
-                                </div>
+                                <PasswordInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                                <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                                 <button type="submit" className="btn btn-primary">Submit Change</button>
                             </form>
                         </div>

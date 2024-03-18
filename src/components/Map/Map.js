@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
-import Chart from 'chart.js/auto';
 import './Map.css';
+import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
+import { fetchPollutionData } from '../../api/pollution';
+import PollutionCharts from './PollutionCharts';
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -11,151 +13,66 @@ const Map = () => {
     const [panelVisible, setPanelVisible] = useState(false);
     const [pollutionData, setPollutionData] = useState(null);
 
-    // Refs for the charts and their instances
+    // Refs for the charts
     const pm25ChartRef = useRef(null);
     const pm10ChartRef = useRef(null);
     const o3ChartRef = useRef(null);
-    const pm25ChartInstance = useRef(null);
-    const pm10ChartInstance = useRef(null);
-    const o3ChartInstance = useRef(null);
 
-    const loadMarkers = () => {
-        const token = localStorage.getItem('token');
-        const urlGetMarker = 'http://localhost:8080/markers';
-
-        fetch(urlGetMarker, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(setMarkers)
-            .catch(error => {
-                console.error('Failed to load markers:', error)
-            });
+    const handleLoadMarkers = async () => {
+        try {
+            const markers = await getMarkers();
+            setMarkers(markers);
+        } catch (error) {
+            console.error('Failed to load markers:', error);
+        }
     };
 
-    const saveMarker = (lat, lng) => {
-        const token = localStorage.getItem('token');
-        const urlSaveMarker = `http://localhost:8080/markers/lat/${lat}/lng/${lng}`;
-
-        fetch(urlSaveMarker, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    console.log('Marker saved successfully:', data);
-                    setMarkers(prevMarkers => [...prevMarkers, data]);
-                } else {
-                    console.error('Failed to save marker:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to save marker:', error);
-            });
+    const handleSaveMarker = async (lat, lng) => {
+        try {
+            const savedMarker = await saveMarker(lat, lng);
+            console.log('Marker saved successfully:', savedMarker);
+            setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+        } catch (error) {
+            console.error('Failed to save marker:', error.message);
+        }
     };
 
-    const deleteMarker = (lat, lng) => {
-        const token = localStorage.getItem('token');
-        const urlDeleteMarker = `http://localhost:8080/markers/lat/${lat}/lng/${lng}`;
-
-        fetch(urlDeleteMarker, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => {
-                if (response.status === 204) {
-                    console.log('Marker deleted successfully');
-                    loadMarkers();
-                } else {
-                    console.error('Failed to delete marker');
-                    response.json().then(data => console.error(data.message));
-                }
-            })
-            .catch(error => {
-                console.error('Network error:', error);
-            });
-    };
-
-    const fetchPollutionData = (lat, lng) => {
-        const urlPollution = `http://localhost:8080/pollution/lat/${lat}/lng/${lng}`;
-        fetch(urlPollution)
-            .then(response => response.json())
-            .then(data => {
-                setPollutionData(data); // Update the state with fetched data
-            })
-            .catch(error => console.error('Error fetching pollution data:', error));
+    const handleDeleteMarker = async (lat, lng) => {
+        try {
+            await deleteMarker(lat, lng);
+            console.log('Marker deleted successfully');
+            handleLoadMarkers();
+        } catch (error) {
+            console.error('Failed to delete marker:', error.message);
+        }
     };
 
     const MapEvents = () => {
         useMapEvents({
             click: (e) => {
-                saveMarker(e.latlng.lat, e.latlng.lng);
+                handleSaveMarker(e.latlng.lat, e.latlng.lng);
             },
         });
         return null;
     };
 
-    const handleMarkerClick = (marker) => {
+    const handleMarkerClick = async (marker) => {
         setSelectedMarker(marker);
-        fetchPollutionData(marker.lat, marker.lng);
-        setPanelVisible(true);
+        try {
+            const data = await fetchPollutionData(marker.lat, marker.lng);
+            setPollutionData(data);
+            setPanelVisible(true);
+        } catch (error) {
+            console.error('Error fetching pollution data:', error);
+        }
     };
 
     const closePanel = () => {
         setPanelVisible(false);
     };
 
-    const createOrUpdatePollutionChart = (chartRef, chartInstanceRef, label, data) => {
-        if (chartInstanceRef.current) {
-            chartInstanceRef.current.destroy();
-        }
-
-        const chartContext = chartRef.getContext('2d');
-        if (chartContext) {
-            chartInstanceRef.current = new Chart(chartContext, {
-                type: 'bar',
-                data: {
-                    labels: data.map(day => day.day),
-                    datasets: [{
-                        label,
-                        data: data.map(day => day.avg),
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    };
-
     useEffect(() => {
-        if (pollutionData) {
-            createOrUpdatePollutionChart(pm25ChartRef.current, pm25ChartInstance, 'PM 2.5 Pollution Data', pollutionData.data.forecast.daily.pm25);
-            createOrUpdatePollutionChart(pm10ChartRef.current, pm10ChartInstance, 'PM 10 Pollution Data', pollutionData.data.forecast.daily.pm10);
-            createOrUpdatePollutionChart(o3ChartRef.current, o3ChartInstance, 'O3 Pollution Data', pollutionData.data.forecast.daily.o3);
-        }
-    }, [pollutionData]);
-
-    useEffect(() => {
-        loadMarkers();
+        handleLoadMarkers();
     }, []);
 
     return (
@@ -184,12 +101,10 @@ const Map = () => {
                             <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
                         </div>
                         <div className="marker-info-content">
-                            <canvas ref={pm25ChartRef}></canvas>
-                            <canvas ref={pm10ChartRef}></canvas>
-                            <canvas ref={o3ChartRef}></canvas>
+                            <PollutionCharts pollutionData={pollutionData} refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}/>
                         </div>
                         <div className="marker-info-footer">
-                            <button className="delete-btn" onClick={() => { deleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
+                            <button className="delete-btn" onClick={() => { handleDeleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
                         </div>
                     </>
                 )}
