@@ -30,29 +30,15 @@ const Map = () => {
         }
     };
 
-    const saveMarker = (lat, lng) => {
+    const handleSaveMarker = async (lat, lng) => {
         const token = localStorage.getItem('token');
-        const urlSaveMarker = `http://localhost:8080/markers/lat/${lat}/lng/${lng}`;
-
-        fetch(urlSaveMarker, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    console.log('Marker saved successfully:', data);
-                    setMarkers(prevMarkers => [...prevMarkers, data]);
-                } else {
-                    console.error('Failed to save marker:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to save marker:', error);
-            });
+        try {
+            const savedMarker = await saveMarker(token, lat, lng);
+            console.log('Marker saved successfully:', savedMarker);
+            setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+        } catch (error) {
+            console.error('Failed to save marker:', error.message);
+        }
     };
 
     const handleDeleteMarker = async (lat, lng) => {
@@ -79,7 +65,7 @@ const Map = () => {
     const MapEvents = () => {
         useMapEvents({
             click: (e) => {
-                saveMarker(e.latlng.lat, e.latlng.lng);
+                handleSaveMarker(e.latlng.lat, e.latlng.lng); // Use the adjusted function here
             },
         });
         return null;
