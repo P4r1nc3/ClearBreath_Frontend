@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
-import Chart from 'chart.js/auto';
 import './Map.css';
 import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
+import PollutionCharts from './PollutionCharts';
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -12,13 +12,10 @@ const Map = () => {
     const [panelVisible, setPanelVisible] = useState(false);
     const [pollutionData, setPollutionData] = useState(null);
 
-    // Refs for the charts and their instances
+    // Refs for the charts
     const pm25ChartRef = useRef(null);
     const pm10ChartRef = useRef(null);
     const o3ChartRef = useRef(null);
-    const pm25ChartInstance = useRef(null);
-    const pm10ChartInstance = useRef(null);
-    const o3ChartInstance = useRef(null);
 
     const handleLoadMarkers = async () => {
         const token = localStorage.getItem('token');
@@ -65,7 +62,7 @@ const Map = () => {
     const MapEvents = () => {
         useMapEvents({
             click: (e) => {
-                handleSaveMarker(e.latlng.lat, e.latlng.lng); // Use the adjusted function here
+                handleSaveMarker(e.latlng.lat, e.latlng.lng);
             },
         });
         return null;
@@ -80,44 +77,6 @@ const Map = () => {
     const closePanel = () => {
         setPanelVisible(false);
     };
-
-    const createOrUpdatePollutionChart = (chartRef, chartInstanceRef, label, data) => {
-        if (chartInstanceRef.current) {
-            chartInstanceRef.current.destroy();
-        }
-
-        const chartContext = chartRef.getContext('2d');
-        if (chartContext) {
-            chartInstanceRef.current = new Chart(chartContext, {
-                type: 'bar',
-                data: {
-                    labels: data.map(day => day.day),
-                    datasets: [{
-                        label,
-                        data: data.map(day => day.avg),
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    };
-
-    useEffect(() => {
-        if (pollutionData) {
-            createOrUpdatePollutionChart(pm25ChartRef.current, pm25ChartInstance, 'PM 2.5 Pollution Data', pollutionData.data.forecast.daily.pm25);
-            createOrUpdatePollutionChart(pm10ChartRef.current, pm10ChartInstance, 'PM 10 Pollution Data', pollutionData.data.forecast.daily.pm10);
-            createOrUpdatePollutionChart(o3ChartRef.current, o3ChartInstance, 'O3 Pollution Data', pollutionData.data.forecast.daily.o3);
-        }
-    }, [pollutionData]);
 
     useEffect(() => {
         handleLoadMarkers();
@@ -149,9 +108,10 @@ const Map = () => {
                             <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
                         </div>
                         <div className="marker-info-content">
-                            <canvas ref={pm25ChartRef}></canvas>
-                            <canvas ref={pm10ChartRef}></canvas>
-                            <canvas ref={o3ChartRef}></canvas>
+                            <PollutionCharts
+                                pollutionData={pollutionData}
+                                refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}
+                            />
                         </div>
                         <div className="marker-info-footer">
                             <button className="delete-btn" onClick={() => { handleDeleteMarker(selectedMarker.lat, selectedMarker.lng); closePanel(); }}>Delete Marker</button>
