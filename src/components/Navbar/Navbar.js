@@ -19,7 +19,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-white shadow-lg">
-            <div className="mx-auto px-4 py-3 max-w-screen-xl sm:px-6 lg:px-8" style={{ maxWidth: '95%' }}>
+            <div className="mx-auto px-4 py-3 max-w-screen-xl sm:px-6 lg:px-8" style={{ maxWidth: '90%' }}>
                 <div className="flex justify-between">
                     <div className="flex-shrink-0">
                         <Link to="/" className="text-lg font-bold text-gray-800"><span className="text-blue-400">Clear</span>Breath</Link>
@@ -55,15 +55,18 @@ const Navbar = () => {
             </div>
             <div className={`${isNavOpen ? 'block' : 'hidden'} md:hidden`}>
                 <div className="px-2 pt-2 pb-3 sm:px-3">
-                    <Link to="/markers" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Markers</Link>
-                    <Link to="/map" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Map</Link>
-                    <Link to="/user" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Account</Link>
-                    {loggedIn ? (
-                        <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out" onClick={handleLogout}>Logout</a>
-                    ) : (
+                    {!loggedIn && (
                         <>
                             <Link to="/signin" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">SignIn</Link>
                             <Link to="/signup" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">SignUp</Link>
+                        </>
+                    )}
+                    {loggedIn && (
+                        <>
+                            <Link to="/markers" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Markers</Link>
+                            <Link to="/map" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Map</Link>
+                            <Link to="/user" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Account</Link>
+                            <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out" onClick={handleLogout}>Logout</a>
                         </>
                     )}
                 </div>
