@@ -1,13 +1,11 @@
-const storeTokenInLocalStorage = (token) => {
+export const storeTokenInLocalStorage = (token) => {
     localStorage.setItem("token", token);
 };
 
-const getTokenFromLocalStorage = () => {
+export const getTokenFromLocalStorage = () => {
     return localStorage.getItem("token");
 };
 
-const removeTokenFromLocalStorage = () => {
+export const removeTokenFromLocalStorage = () => {
     localStorage.removeItem("token");
 };
-
-export { storeTokenInLocalStorage, getTokenFromLocalStorage, removeTokenFromLocalStorage };
