@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUserData, changeUserPassword, deleteUserProfile } from '../../api/user';
 import PasswordInput from '../PasswordInput';
+import { toast, ToastContainer } from 'react-toastify';
 
 const UserProfile = () => {
     const [userDetails, setUserDetails] = useState({
@@ -23,17 +24,20 @@ const UserProfile = () => {
                     createdAt: new Date(data.createdAt).toLocaleDateString(),
                 });
             })
-            .catch(error => console.error('Failed to fetch user data!', error));
+            .catch(error => {
+                console.error('Failed to fetch user data!', error);
+                toast.error('Failed to fetch user data!');
+            });
     }, []);
 
     const handleChangePassword = async (event) => {
         event.preventDefault();
         try {
             await changeUserPassword(currentPassword, newPassword);
-            alert('Password changed successfully.');
+            toast.success('Password changed successfully.');
         } catch (error) {
             console.error('Failed to change password:', error);
-            alert('Failed to change password. Please try again.');
+            toast.error('Failed to change password. Please try again.');
         }
     };
 
@@ -43,16 +47,18 @@ const UserProfile = () => {
         }
         try {
             await deleteUserProfile();
-            console.log('Profile deleted successfully.');
             localStorage.removeItem('token');
             window.location.href = '/signin';
+            toast.success('Profile deleted successfully.');
         } catch (error) {
             console.error('Failed to delete user profile!', error);
+            toast.error('Failed to delete user profile.');
         }
     };
 
     return (
         <div className="container mx-auto px-4 py-8">
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white rounded-lg shadow-md">
                     <div className="px-6 py-4 border-b border-gray-200">
