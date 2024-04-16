@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { signIn } from '../../api/auth';
 import PasswordInput from "../PasswordInput";
+import { toast, ToastContainer } from 'react-toastify';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -18,14 +19,16 @@ const SignIn = () => {
             const data = await signIn(email, password);
             login(data.token);
             navigate('/');
+            toast.success('Sign In successful!');
         } catch (error) {
             console.error('Sign In error:', error.message);
-            alert('Sign In failed. Please check your information and try again.');
+            toast.error('Sign In failed. Please check your information and try again.');
         }
     };
 
     return (
         <section>
+            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0" style={{ maxHeight: 'calc(100vh - 52px)' }}>
                 <div className="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
