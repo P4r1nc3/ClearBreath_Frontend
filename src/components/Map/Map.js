@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
 import './Map.css';
@@ -7,6 +7,21 @@ import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
 import { fetchPollutionData } from '../../api/pollution';
 import PollutionCharts from './PollutionCharts';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const SetViewOnClick = ({ anim }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (anim) {
+            map.flyTo([anim.lat, anim.lng], 7, {
+                animate: true,
+                duration: 1
+            });
+        }
+    }, [anim, map]);
+
+    return null;
+};
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -92,6 +107,7 @@ const Map = () => {
                     </Marker>
                 ))}
                 <ZoomControl position="bottomright" />
+                {selectedMarker && <SetViewOnClick anim={selectedMarker} />}
                 <MapEvents />
             </MapContainer>
             <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover style={{ top: '50px' }} />
