@@ -6,6 +6,7 @@ import './Map.css';
 import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
 import { fetchPollutionData } from '../../api/pollution';
 import PollutionCharts from './PollutionCharts';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -32,8 +33,10 @@ const Map = () => {
             const savedMarker = await saveMarker(lat, lng);
             console.log('Marker saved successfully:', savedMarker);
             setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+            toast.success('Marker added successfully!');
         } catch (error) {
             console.error('Failed to save marker:', error.message);
+            toast.error('Failed to add marker. Please try again.');
         }
     };
 
@@ -42,8 +45,10 @@ const Map = () => {
             await deleteMarker(lat, lng);
             console.log('Marker deleted successfully');
             handleLoadMarkers();
+            toast.info('Marker deleted successfully.');
         } catch (error) {
             console.error('Failed to delete marker:', error.message);
+            toast.error('Failed to delete marker. Please try again.');
         }
     };
 
@@ -89,6 +94,7 @@ const Map = () => {
                 <ZoomControl position="bottomright" />
                 <MapEvents />
             </MapContainer>
+            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover style={{ top: '50px' }} />
             <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
                 {selectedMarker && (
                     <>
