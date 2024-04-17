@@ -8,8 +8,6 @@ import UserProfile from './components/UserProfile/UserProfile';
 import Markers from './components/Markers/Markers';
 import Map from './components/Map/Map';
 import { AuthProvider } from './components/Auth/AuthContext';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   return (

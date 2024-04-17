@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import './Markers.css';
 import { getMarkers, deleteMarker } from '../../api/marker';
 
 const Markers = () => {
@@ -31,12 +30,12 @@ const Markers = () => {
     }, []);
 
     return (
-        <div className="container mt-4">
+        <div className="container mx-auto mt-4 max-w-screen-lg">
             {markers.map((marker, index) => (
-                <div key={index} className="marker-item">
+                <div key={index} className="marker-item grid grid-cols-5 items-center p-4 mb-4 rounded shadow-md hover:shadow-lg bg-gray-100">
                     <div className="marker-icon">
-                        <FontAwesomeIcon icon={faLocationDot} />
-                        <span>  {marker.continent}</span>
+                        <FontAwesomeIcon icon={faLocationDot} className="text-blue-500" />
+                        <div className="marker-text">{marker.continent}</div>
                     </div>
                     <div className="marker-text">{marker.countryName}</div>
                     <div className="marker-text">{marker.city}</div>

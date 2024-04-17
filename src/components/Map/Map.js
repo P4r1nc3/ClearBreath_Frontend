@@ -1,11 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from "../../constants";
 import './Map.css';
 import { saveMarker, getMarkers, deleteMarker } from '../../api/marker';
 import { fetchPollutionData } from '../../api/pollution';
 import PollutionCharts from './PollutionCharts';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const SetViewOnClick = ({ anim }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (anim) {
+            map.flyTo([anim.lat, anim.lng], 7, {
+                animate: true,
+                duration: 1
+            });
+        }
+    }, [anim, map]);
+
+    return null;
+};
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -32,8 +48,10 @@ const Map = () => {
             const savedMarker = await saveMarker(lat, lng);
             console.log('Marker saved successfully:', savedMarker);
             setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+            toast.success('Marker added successfully!');
         } catch (error) {
             console.error('Failed to save marker:', error.message);
+            toast.error('Failed to add marker. Please try again.');
         }
     };
 
@@ -42,8 +60,10 @@ const Map = () => {
             await deleteMarker(lat, lng);
             console.log('Marker deleted successfully');
             handleLoadMarkers();
+            toast.info('Marker deleted successfully.');
         } catch (error) {
             console.error('Failed to delete marker:', error.message);
+            toast.error('Failed to delete marker. Please try again.');
         }
     };
 
@@ -77,7 +97,7 @@ const Map = () => {
 
     return (
         <>
-            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 56px)', width: '100%' }} zoomControl={false}>
+            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 52px)', width: '100%' }} zoomControl={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; ClearBreath'
@@ -87,8 +107,10 @@ const Map = () => {
                     </Marker>
                 ))}
                 <ZoomControl position="bottomright" />
+                {selectedMarker && <SetViewOnClick anim={selectedMarker} />}
                 <MapEvents />
             </MapContainer>
+            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover style={{ top: '50px' }} />
             <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
                 {selectedMarker && (
                     <>
