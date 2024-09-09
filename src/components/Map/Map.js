@@ -9,19 +9,30 @@ import PollutionCharts from './PollutionCharts';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SetViewOnClick = ({ anim }) => {
+const SetViewOnClick = ({ anim, minZoom = 8 }) => {
     const map = useMap();
+
     useEffect(() => {
         if (anim) {
-            map.flyTo([anim.lat, anim.lng], 7, {
-                animate: true,
-                duration: 1
-            });
+            const currentZoom = map.getZoom();
+            if (currentZoom < minZoom) {
+                map.flyTo([anim.lat, anim.lng], minZoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
+            else {
+                map.setView([anim.lat, anim.lng], currentZoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
         }
-    }, [anim, map]);
+    }, [anim, map, minZoom]);
 
     return null;
 };
+
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
