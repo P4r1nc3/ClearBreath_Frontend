@@ -125,13 +125,12 @@ const Map = () => {
             <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
                 {selectedMarker && (
                     <>
-                        <div className="marker-info-header">
+                        <div className="marker-info-header pt-4 pl-5">
                             <button className="close-btn" onClick={closePanel}>&times;</button>
-                            <h3>Marker Info</h3>
-                            <p>Kontynent: {selectedMarker.continent}</p>
-                            <p>Miasto: {selectedMarker.city}</p>
-                            <p>Kraj: {selectedMarker.countryName}</p>
-                            <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
+                            <p className="text-4xl">{selectedMarker.continent}</p>
+                            <p className="text-2xl">{selectedMarker.countryName}</p>
+                            <p className="text-xl">{selectedMarker.city}</p>
+                            <p className="text-base">{selectedMarker.distance.toFixed(2)} km</p>
                         </div>
                         <div className="marker-info-content">
                             <PollutionCharts pollutionData={pollutionData} refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}/>
