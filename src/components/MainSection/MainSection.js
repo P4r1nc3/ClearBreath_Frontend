@@ -73,7 +73,6 @@ const MainSection = () => {
                 </div>
             </section>
 
-
             {/* Features Section */}
             <motion.section
                 className="py-20 bg-white"
@@ -96,25 +95,20 @@ const MainSection = () => {
             </motion.section>
 
             {/* How It Works Section */}
-            <motion.section
-                className="py-20 bg-blue-50"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={{
-                    hidden: { opacity: 0, y: 50 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
-                }}
-            >
-                <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-10">How It Works</h2>
-                    <div className="flex flex-col lg:flex-row items-center lg:space-x-10 space-y-6 lg:space-y-0">
-                        <StepCard number="1" title="Explore the Map" description="Browse air quality levels around the world." />
-                        <StepCard number="2" title="Add Markers" description="Contribute by adding data and location markers." />
-                        <StepCard number="3" title="Track Trends" description="Monitor and analyze air quality changes." />
+            <section className="py-20 bg-blue-50">
+                <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-lg font-semibold text-gray-600 uppercase mb-4">How It Works</h2>
+                    <h3 className="text-3xl font-bold text-gray-800 mb-12">Three Steps to a Cleaner Environment</h3>
+
+                    <div className="flex flex-col lg:flex-row items-center justify-between lg:space-x-8 space-y-6 lg:space-y-0">
+                        <Step number="1" title="Explore the Map" description="Browse air quality levels around the world." />
+                        <Arrow />
+                        <Step number="2" title="Add Markers" description="Contribute by adding data and location markers." />
+                        <Arrow />
+                        <Step number="3" title="Track Trends" description="Monitor and analyze air quality changes." />
                     </div>
                 </div>
-            </motion.section>
+            </section>
 
             {/* Testimonials Section */}
             <motion.section
@@ -165,6 +159,31 @@ const MainSection = () => {
     );
 };
 
+// Step Component for How It Works section
+const Step = ({ number, title, description }) => (
+    <div className="flex flex-col items-center text-center">
+        <div className="text-5xl font-bold text-blue-500 mb-2">{number}</div>
+        <h4 className="text-xl font-semibold text-gray-800 mb-2">{title}</h4>
+        <p className="text-gray-600 max-w-xs">{description}</p>
+    </div>
+);
+
+// Arrow Component for How It Works section
+const Arrow = () => (
+    <div className="hidden lg:block text-gray-300">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-12 h-12 mx-4"
+        >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6l6 6-6 6" />
+        </svg>
+    </div>
+);
+
 // Reusable Feature Card Component
 const FeatureCard = ({ icon, title, description }) => (
     <motion.div
@@ -177,17 +196,7 @@ const FeatureCard = ({ icon, title, description }) => (
     </motion.div>
 );
 
-const StepCard = ({ number, title, description }) => (
-    <motion.div
-        className="flex flex-col items-center text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
-        whileHover={{ scale: 1.05 }}
-    >
-        <span className="text-4xl font-bold text-blue-500 mb-4">{number}</span>
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600">{description}</p>
-    </motion.div>
-);
-
+// Reusable Testimonial Card Component
 const TestimonialCard = ({ quote, name, location }) => (
     <motion.div
         className="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition"
