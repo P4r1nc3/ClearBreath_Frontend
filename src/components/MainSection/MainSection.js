@@ -76,7 +76,7 @@ const MainSection = () => {
 
             {/* Features Section */}
             <motion.section
-                className="py-16 bg-white"
+                className="py-20 bg-white"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -97,7 +97,7 @@ const MainSection = () => {
 
             {/* How It Works Section */}
             <motion.section
-                className="py-16 bg-blue-50"
+                className="py-20 bg-blue-50"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -118,7 +118,7 @@ const MainSection = () => {
 
             {/* Testimonials Section */}
             <motion.section
-                className="py-16 bg-white"
+                className="py-20 bg-white"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -137,7 +137,7 @@ const MainSection = () => {
             </motion.section>
 
             {/* Call-to-Action Section */}
-            <section className="py-16 bg-gradient-to-b from-blue-500 to-blue-400 text-white text-center">
+            <section className="py-20 bg-gradient-to-b from-blue-500 to-blue-400 text-white text-center">
                 <div className="container mx-auto max-w-screen-md px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold mb-4">Ready to make an impact?</h2>
                     <p className="mb-6">Join ClearBreath and help us create a cleaner, healthier environment for everyone.</p>
