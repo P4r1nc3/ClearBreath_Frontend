@@ -57,7 +57,7 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50">
+        <div className="flex bg-gray-50" style={{ height: 'calc(100vh - 52px)' }}>
             <ToastContainer position="bottom-right" autoClose={5000} />
 
             {/* Main Content */}
