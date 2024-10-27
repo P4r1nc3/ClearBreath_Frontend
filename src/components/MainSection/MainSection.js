@@ -21,7 +21,7 @@ const MainSection = () => {
     return (
         <main className="bg-gradient-to-b from-blue-100 to-blue-50">
             {/* Hero Section */}
-            <section className="py-10 min-h-screen flex items-center">
+            <section className="py-10 min-h-screen flex items-center bg-gradient-to-b from-white to-blue-100">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
                     <motion.div
                         initial="hidden"
@@ -72,6 +72,7 @@ const MainSection = () => {
                     </motion.div>
                 </div>
             </section>
+
 
             {/* Features Section */}
             <motion.section
