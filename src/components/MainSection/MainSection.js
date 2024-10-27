@@ -21,7 +21,7 @@ const MainSection = () => {
     return (
         <main className="bg-gradient-to-b from-blue-100 to-blue-50">
             {/* Hero Section */}
-            <section className="py-5 min-h-screen flex items-center">
+            <section className="py-10 min-h-screen flex items-center">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
                     <motion.div
                         initial="hidden"
@@ -75,7 +75,7 @@ const MainSection = () => {
 
             {/* Features Section */}
             <motion.section
-                className="py-12 bg-white"
+                className="py-16 bg-white"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -85,7 +85,7 @@ const MainSection = () => {
                 }}
             >
                 <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Features</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-10">Features</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         <FeatureCard icon="🌍" title="Global Map" description="View real-time air quality data across the globe with our interactive map feature." />
                         <FeatureCard icon="📍" title="Custom Markers" description="Add your own markers to the map to share and track local air quality." />
@@ -96,7 +96,7 @@ const MainSection = () => {
 
             {/* How It Works Section */}
             <motion.section
-                className="py-12 bg-blue-50"
+                className="py-16 bg-blue-50"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -106,7 +106,7 @@ const MainSection = () => {
                 }}
             >
                 <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">How It Works</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-10">How It Works</h2>
                     <div className="flex flex-col lg:flex-row items-center lg:space-x-10 space-y-6 lg:space-y-0">
                         <StepCard number="1" title="Explore the Map" description="Browse air quality levels around the world." />
                         <StepCard number="2" title="Add Markers" description="Contribute by adding data and location markers." />
@@ -117,7 +117,7 @@ const MainSection = () => {
 
             {/* Testimonials Section */}
             <motion.section
-                className="py-12 bg-white"
+                className="py-16 bg-white"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -127,7 +127,7 @@ const MainSection = () => {
                 }}
             >
                 <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">What Users Say</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 text-center mb-10">What Users Say</h2>
                     <div className="grid md:grid-cols-2 gap-8">
                         <TestimonialCard quote="ClearBreath has helped me understand air quality levels in my neighborhood!" name="Sarah L." location="New York, USA" />
                         <TestimonialCard quote="A valuable tool for environmental awareness!" name="David R." location="London, UK" />
@@ -136,30 +136,19 @@ const MainSection = () => {
             </motion.section>
 
             {/* Call-to-Action Section */}
-            <motion.section
-                className="py-12 bg-gradient-to-b from-blue-500 to-blue-400 text-white text-center"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={{
-                    hidden: { opacity: 0, y: 50 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
-                }}
-            >
+            <section className="py-16 bg-gradient-to-b from-blue-500 to-blue-400 text-white text-center">
                 <div className="container mx-auto max-w-screen-md px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold mb-4">Ready to make an impact?</h2>
                     <p className="mb-6">Join ClearBreath and help us create a cleaner, healthier environment for everyone.</p>
                     <Link to="/signup">
-                        <motion.button
+                        <button
                             className="bg-white text-blue-500 px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 focus:outline-none transition duration-300 ease-in-out"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
                         >
                             Join Now
-                        </motion.button>
+                        </button>
                     </Link>
                 </div>
-            </motion.section>
+            </section>
 
             {/* Scroll-to-Top Button */}
             {showScrollTop && (
