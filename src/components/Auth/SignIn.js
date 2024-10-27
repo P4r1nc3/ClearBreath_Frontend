@@ -8,7 +8,6 @@ import { toast, ToastContainer } from 'react-toastify';
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -43,14 +42,6 @@ const SignIn = () => {
                             <div>
                                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
                                 <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
-                            </div>
-                            <div className="flex items-start">
-                                <div className="flex items-center h-5">
-                                    <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300" required />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                    <label htmlFor="terms" className="font-light text-gray-500">I accept the <a href="#" className="font-medium text-primary-600 hover:underline">Terms and Conditions</a></label>
-                                </div>
                             </div>
                             <button type="submit" className="w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                 Sign In
