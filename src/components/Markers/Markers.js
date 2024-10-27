@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { getMarkers, deleteMarker } from '../../api/marker';
+import { getMarkers, saveMarker, deleteMarker } from '../../api/marker';
+import axios from 'axios';
+import debounce from 'lodash.debounce';
 
 const Markers = () => {
     const [markers, setMarkers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(''); // dodane pole wyszukiwania
-    const [filteredMarkers, setFilteredMarkers] = useState([]); // dodane pole na przefiltrowane markery
+    const [filteredMarkers, setFilteredMarkers] = useState([]);
+    const [newAddress, setNewAddress] = useState('');
+    const [addressSuggestions, setAddressSuggestions] = useState([]); // nowe pole na sugestie adresów
 
     const handleLoadMarkers = async () => {
         try {
             const markersData = await getMarkers();
             setMarkers(markersData);
-            setFilteredMarkers(markersData); // ustawienie domyślnej listy markerów jako przefiltrowanej
+            setFilteredMarkers(markersData);
         } catch (error) {
             console.error('Failed to load markers:', error);
         }
@@ -31,32 +34,101 @@ const Markers = () => {
         handleLoadMarkers();
     }, []);
 
-    // Funkcja do filtrowania markerów
-    const handleSearch = (event) => {
-        const value = event.target.value.toLowerCase();
-        setSearchTerm(value);
+    const handleAddMarkerByAddress = async () => {
+        if (!newAddress) {
+            alert("Please enter an address.");
+            return;
+        }
 
-        const filtered = markers.filter((marker) =>
-            marker.continent.toLowerCase().includes(value) ||
-            marker.countryName.toLowerCase().includes(value) ||
-            marker.city.toLowerCase().includes(value)
-        );
+        try {
+            const response = await axios.get(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(newAddress)}&format=json`
+            );
 
-        setFilteredMarkers(filtered);
+            if (response.data && response.data.length > 0) {
+                const { lat, lon } = response.data[0];
+                const savedMarker = await saveMarker(parseFloat(lat), parseFloat(lon));
+                setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+                setFilteredMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+                alert("Marker added successfully!");
+            } else {
+                alert("Address not found. Please try a different address.");
+            }
+        } catch (error) {
+            console.error('Error finding address:', error);
+            alert('Error finding address. Please try again.');
+        }
+    };
+
+    const fetchAddressSuggestions = async (query) => {
+        if (!query) {
+            setAddressSuggestions([]);
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`
+            );
+            setAddressSuggestions(response.data);
+        } catch (error) {
+            console.error('Error fetching address suggestions:', error);
+        }
+    };
+
+    // Debounce fetching suggestions
+    const debouncedFetchAddressSuggestions = useCallback(debounce(fetchAddressSuggestions, 300), []);
+
+    const handleAddressInputChange = (event) => {
+        const query = event.target.value;
+        setNewAddress(query);
+        debouncedFetchAddressSuggestions(query);  // debounced call to fetch suggestions
+    };
+
+    const handleSuggestionClick = async (suggestion) => {
+        const lat = parseFloat(suggestion.lat);
+        const lon = parseFloat(suggestion.lon);
+
+        try {
+            const savedMarker = await saveMarker(lat, lon);
+            setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+            setFilteredMarkers(prevMarkers => [...prevMarkers, savedMarker]);
+            alert("Marker added successfully!");
+        } catch (error) {
+            console.error('Failed to add marker:', error);
+        }
+
+        setNewAddress('');
+        setAddressSuggestions([]);
     };
 
     return (
         <div className="container mx-auto mt-8 max-w-4xl">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6">Location Markers</h1>
 
-            {/* Pole wyszukiwania */}
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearch}
-                placeholder="Search by continent, country, or city..."
-                className="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
+            <div className="flex items-center mb-4 relative">
+                <input
+                    type="text"
+                    value={newAddress}
+                    onChange={handleAddressInputChange}
+                    placeholder="Enter an address to add a marker"
+                    className="w-full p-2 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                />
+
+                {addressSuggestions.length > 0 && (
+                    <ul className="absolute top-full mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto z-10">
+                        {addressSuggestions.map((suggestion, index) => (
+                            <li
+                                key={index}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="p-2 cursor-pointer hover:bg-blue-100"
+                            >
+                                {suggestion.display_name}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
             {filteredMarkers.length > 0 ? (
                 filteredMarkers.map((marker, index) => (
