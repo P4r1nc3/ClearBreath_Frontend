@@ -5,11 +5,14 @@ import { getMarkers, deleteMarker } from '../../api/marker';
 
 const Markers = () => {
     const [markers, setMarkers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(''); // dodane pole wyszukiwania
+    const [filteredMarkers, setFilteredMarkers] = useState([]); // dodane pole na przefiltrowane markery
 
     const handleLoadMarkers = async () => {
         try {
             const markersData = await getMarkers();
             setMarkers(markersData);
+            setFilteredMarkers(markersData); // ustawienie domyślnej listy markerów jako przefiltrowanej
         } catch (error) {
             console.error('Failed to load markers:', error);
         }
@@ -28,11 +31,35 @@ const Markers = () => {
         handleLoadMarkers();
     }, []);
 
+    // Funkcja do filtrowania markerów
+    const handleSearch = (event) => {
+        const value = event.target.value.toLowerCase();
+        setSearchTerm(value);
+
+        const filtered = markers.filter((marker) =>
+            marker.continent.toLowerCase().includes(value) ||
+            marker.countryName.toLowerCase().includes(value) ||
+            marker.city.toLowerCase().includes(value)
+        );
+
+        setFilteredMarkers(filtered);
+    };
+
     return (
         <div className="container mx-auto mt-8 max-w-4xl">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6">Location Markers</h1>
-            {markers.length > 0 ? (
-                markers.map((marker, index) => (
+
+            {/* Pole wyszukiwania */}
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Search by continent, country, or city..."
+                className="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            />
+
+            {filteredMarkers.length > 0 ? (
+                filteredMarkers.map((marker, index) => (
                     <div
                         key={index}
                         className="flex items-center justify-between p-4 mb-4 rounded-lg shadow-md hover:shadow-lg bg-white border border-gray-200 transition-shadow duration-200"
