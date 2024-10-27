@@ -18,7 +18,6 @@ const Markers = () => {
     const handleDeleteMarker = async (lat, lng) => {
         try {
             await deleteMarker(lat, lng);
-            console.log('Marker deleted successfully');
             handleLoadMarkers();
         } catch (error) {
             console.error('Failed to delete marker:', error);
@@ -30,21 +29,40 @@ const Markers = () => {
     }, []);
 
     return (
-        <div className="container mx-auto mt-4 max-w-screen-lg">
-            {markers.map((marker, index) => (
-                <div key={index} className="marker-item grid grid-cols-5 items-center p-4 mb-4 rounded shadow-md hover:shadow-lg bg-gray-100">
-                    <div className="marker-icon">
-                        <FontAwesomeIcon icon={faLocationDot} className="text-blue-500" />
-                        <div className="marker-text">{marker.continent}</div>
+        <div className="container mx-auto mt-8 max-w-4xl">
+            <h1 className="text-2xl font-semibold text-gray-800 mb-6">Location Markers</h1>
+            {markers.length > 0 ? (
+                markers.map((marker, index) => (
+                    <div
+                        key={index}
+                        className="flex items-center justify-between p-4 mb-4 rounded-lg shadow-md hover:shadow-lg bg-white border border-gray-200 transition-shadow duration-200"
+                    >
+                        <div className="flex items-center space-x-4 w-1/2 overflow-hidden">
+                            <FontAwesomeIcon icon={faLocationDot} className="text-blue-500 text-xl" />
+                            <div className="text-gray-800 truncate">
+                                <p className="font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                                    {marker.continent}
+                                </p>
+                                <p className="text-sm text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                                    {marker.countryName}, {marker.city}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="text-gray-600 text-sm w-1/4">
+                            <p>Latitude: {marker.lat.toFixed(4)}</p>
+                            <p>Longitude: {marker.lng.toFixed(4)}</p>
+                        </div>
+                        <button
+                            onClick={() => handleDeleteMarker(marker.lat, marker.lng)}
+                            className="py-2 px-4 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors duration-200 focus:outline-none"
+                        >
+                            Delete
+                        </button>
                     </div>
-                    <div className="marker-text">{marker.countryName}</div>
-                    <div className="marker-text">{marker.city}</div>
-                    <div className="marker-text">Lat: {marker.lat.toFixed(4)}, Lng: {marker.lng.toFixed(4)}</div>
-                    <div>
-                        <button className="btn btn-danger btn-sm delete-btn" onClick={() => handleDeleteMarker(marker.lat, marker.lng)}>Delete</button>
-                    </div>
-                </div>
-            ))}
+                ))
+            ) : (
+                <p className="text-gray-500 text-center">No markers available.</p>
+            )}
         </div>
     );
 };
