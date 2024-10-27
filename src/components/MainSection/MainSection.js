@@ -6,8 +6,8 @@ const MainSection = () => {
     return (
         <main className="bg-gradient-to-b from-blue-100 to-blue-50">
             {/* Hero Section */}
-            <section className="py-5">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 my-5 max-w-screen-xl">
+            <section className="py-5 min-h-screen flex items-center">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
                     <div className="flex flex-col lg:flex-row items-center gap-10">
                         <motion.div
                             className="lg:w-1/2"
@@ -23,7 +23,7 @@ const MainSection = () => {
                             </p>
                             <Link to="/signup">
                                 <motion.button
-                                    className="bg-blue-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-700 transition duration-300 ease-in-out"
+                                    className="bg-blue-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-600 focus:outline-none focus:bg-blue-700 transition duration-300 ease-in-out"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -40,7 +40,7 @@ const MainSection = () => {
                             <motion.img
                                 src={process.env.PUBLIC_URL + '/landing.png'}
                                 alt="Clear Breath Landing"
-                                className="w-full rounded-lg shadow-xl"
+                                className="w-full rounded-lg" // Removed shadow and any borders
                                 initial={{ scale: 0.9 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 0.8, ease: 'easeInOut' }}
