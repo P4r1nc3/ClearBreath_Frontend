@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const MainSection = () => {
     return (
@@ -12,9 +13,11 @@ const MainSection = () => {
                         <p className="text-lg text-gray-700 mb-6">
                             ClearBreath is a platform dedicated to environmental awareness and air quality monitoring. Explore the map, add markers, and visualize pollution data in real-time. Help create a cleaner and healthier environment for everyone.
                         </p>
-                        <button className="bg-blue-400 text-white px-6 py-3 rounded-full hover:bg-blue-500 focus:outline-none focus:bg-blue-700 transition duration-300 ease-in-out">
-                            Get Started
-                        </button>
+                        <Link to="/signup">
+                            <button className="bg-blue-400 text-white px-6 py-3 rounded-full hover:bg-blue-500 focus:outline-none focus:bg-blue-700 transition duration-300 ease-in-out">
+                                Get Started
+                            </button>
+                        </Link>
                     </div>
                     <div className="lg:w-1/2">
                         <img src={process.env.PUBLIC_URL + '/landing.png'} className="w-full" alt="Clear Breath Landing" />
