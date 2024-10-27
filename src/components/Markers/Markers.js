@@ -54,7 +54,7 @@ const Markers = () => {
                         </div>
                         <button
                             onClick={() => handleDeleteMarker(marker.lat, marker.lng)}
-                            className="py-2 px-4 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors duration-200 focus:outline-none"
+                            className="py-2 px-4 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors duration-200 focus:outline-none"
                         >
                             Delete
                         </button>
