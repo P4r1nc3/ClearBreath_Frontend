@@ -4,12 +4,14 @@ import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { getMarkers, saveMarker, deleteMarker } from '../../api/marker';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Markers = () => {
     const [markers, setMarkers] = useState([]);
     const [filteredMarkers, setFilteredMarkers] = useState([]);
     const [newAddress, setNewAddress] = useState('');
-    const [addressSuggestions, setAddressSuggestions] = useState([]); // nowe pole na sugestie adresów
+    const [addressSuggestions, setAddressSuggestions] = useState([]);
 
     const handleLoadMarkers = async () => {
         try {
@@ -24,41 +26,18 @@ const Markers = () => {
     const handleDeleteMarker = async (lat, lng) => {
         try {
             await deleteMarker(lat, lng);
+            console.log('Marker deleted successfully');
             handleLoadMarkers();
+            toast.info('Marker deleted successfully.');
         } catch (error) {
-            console.error('Failed to delete marker:', error);
+            console.error('Failed to delete marker:', error.message);
+            toast.error('Failed to delete marker. Please try again.');
         }
     };
 
     useEffect(() => {
         handleLoadMarkers();
     }, []);
-
-    const handleAddMarkerByAddress = async () => {
-        if (!newAddress) {
-            alert("Please enter an address.");
-            return;
-        }
-
-        try {
-            const response = await axios.get(
-                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(newAddress)}&format=json`
-            );
-
-            if (response.data && response.data.length > 0) {
-                const { lat, lon } = response.data[0];
-                const savedMarker = await saveMarker(parseFloat(lat), parseFloat(lon));
-                setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
-                setFilteredMarkers(prevMarkers => [...prevMarkers, savedMarker]);
-                alert("Marker added successfully!");
-            } else {
-                alert("Address not found. Please try a different address.");
-            }
-        } catch (error) {
-            console.error('Error finding address:', error);
-            alert('Error finding address. Please try again.');
-        }
-    };
 
     const fetchAddressSuggestions = async (query) => {
         if (!query) {
@@ -93,7 +72,7 @@ const Markers = () => {
             const savedMarker = await saveMarker(lat, lon);
             setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
             setFilteredMarkers(prevMarkers => [...prevMarkers, savedMarker]);
-            alert("Marker added successfully!");
+            toast.success('Marker added successfully!');
         } catch (error) {
             console.error('Failed to add marker:', error);
         }
@@ -129,6 +108,7 @@ const Markers = () => {
                     </ul>
                 )}
             </div>
+            <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover style={{ top: '50px' }} />
 
             {filteredMarkers.length > 0 ? (
                 filteredMarkers.map((marker, index) => (
