@@ -8,7 +8,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Markers = () => {
-    const [markers, setMarkers] = useState([]);
     const [filteredMarkers, setFilteredMarkers] = useState([]);
     const [newAddress, setNewAddress] = useState('');
     const [addressSuggestions, setAddressSuggestions] = useState([]);
@@ -16,7 +15,6 @@ const Markers = () => {
     const handleLoadMarkers = async () => {
         try {
             const markersData = await getMarkers();
-            setMarkers(markersData);
             setFilteredMarkers(markersData);
         } catch (error) {
             console.error('Failed to load markers:', error);
@@ -56,7 +54,10 @@ const Markers = () => {
     };
 
     // Debounce fetching suggestions
-    const debouncedFetchAddressSuggestions = useCallback(debounce(fetchAddressSuggestions, 300), []);
+    const debouncedFetchAddressSuggestions = useCallback(
+        debounce((query) => fetchAddressSuggestions(query), 300),
+        [fetchAddressSuggestions]
+    );
 
     const handleAddressInputChange = (event) => {
         const query = event.target.value;
@@ -70,7 +71,6 @@ const Markers = () => {
 
         try {
             const savedMarker = await saveMarker(lat, lon);
-            setMarkers(prevMarkers => [...prevMarkers, savedMarker]);
             setFilteredMarkers(prevMarkers => [...prevMarkers, savedMarker]);
             toast.success('Marker added successfully!');
         } catch (error) {
@@ -82,7 +82,7 @@ const Markers = () => {
     };
 
     return (
-        <div className="container mx-auto mt-8 max-w-4xl">
+        <div className="container mx-auto mt-8 max-w-3xl">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6">Location Markers</h1>
 
             <div className="flex items-center mb-4 relative">
@@ -108,7 +108,18 @@ const Markers = () => {
                     </ul>
                 )}
             </div>
-            <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover style={{ top: '50px' }} />
+            <ToastContainer
+                position="bottom-right"
+                autoClose={1500}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                style={{ width: '230px', fontSize: '14px' }}
+            />
 
             {filteredMarkers.length > 0 ? (
                 filteredMarkers.map((marker, index) => (
