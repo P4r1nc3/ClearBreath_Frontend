@@ -13,6 +13,7 @@ const UserProfile = () => {
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [activeTab, setActiveTab] = useState('profile');
 
     useEffect(() => {
         fetchUserData()
@@ -49,7 +50,6 @@ const UserProfile = () => {
             await deleteUserProfile();
             localStorage.removeItem('token');
             window.location.href = '/signin';
-            toast.success('Profile deleted successfully.');
         } catch (error) {
             console.error('Failed to delete user profile!', error);
             toast.error('Failed to delete user profile.');
@@ -57,33 +57,127 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white rounded-lg shadow-md">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                        <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
-                    </div>
-                    <div className="p-6">
-                        <p className="text-gray-700"><strong>First Name:</strong> {userDetails.firstName}</p>
-                        <p className="text-gray-700"><strong>Last Name:</strong> {userDetails.lastName}</p>
-                        <p className="text-gray-700"><strong>Email:</strong> {userDetails.email}</p>
-                        <p className="text-gray-700"><strong>Account Creation Date:</strong> {userDetails.createdAt}</p>
-                        <button className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:bg-red-600" onClick={handleDeleteUser}>Delete Profile</button>
+        <div className="container mx-auto max-w-screen-xl" style={{ height: 'calc(100vh - 52px)' }}>
+            <ToastContainer position="bottom-right" autoClose={5000} />
+
+            {/* Main Content */}
+            <div className="flex flex-col w-full p-8">
+                {/* Top Bar */}
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-700">Welcome, {userDetails.firstName}</h1>
+                        <p className="text-sm text-gray-500">{new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                        <h2 className="text-xl font-semibold text-gray-800">Change Password</h2>
-                    </div>
-                    <div className="p-6">
-                        <form onSubmit={handleChangePassword}>
-                            <PasswordInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" />
-                            <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
-                            <button type="submit" className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit Change</button>
-                        </form>
-                    </div>
+                {/* Tabs */}
+                <div className="flex space-x-4 border-b border-gray-200 mb-6">
+                    <button
+                        className={`py-2 px-4 ${activeTab === 'profile' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                        onClick={() => setActiveTab('profile')}
+                    >
+                        Profile Information
+                    </button>
+                    <button
+                        className={`py-2 px-4 ${activeTab === 'password' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                        onClick={() => setActiveTab('password')}
+                    >
+                        Change Password
+                    </button>
+                    <button
+                        className={`py-2 px-4 ${activeTab === 'delete' ? 'border-b-2 border-red-500 text-red-500 font-semibold' : 'text-gray-600'}`}
+                        onClick={() => setActiveTab('delete')}
+                    >
+                        Delete Account
+                    </button>
+                </div>
+
+                {/* Content Area */}
+                <div className="bg-white rounded-lg shadow p-6">
+                    {activeTab === 'profile' && (
+                        <div>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Profile Information</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-gray-600">First Name</label>
+                                    <input
+                                        type="text"
+                                        value={userDetails.firstName}
+                                        disabled
+                                        className="w-full bg-gray-100 rounded-lg border border-gray-200 p-2 text-gray-600 mt-1"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-600">Last Name</label>
+                                    <input
+                                        type="text"
+                                        value={userDetails.lastName}
+                                        disabled
+                                        className="w-full bg-gray-100 rounded-lg border border-gray-200 p-2 text-gray-600 mt-1"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-600">Email</label>
+                                    <input
+                                        type="text"
+                                        value={userDetails.email}
+                                        disabled
+                                        className="w-full bg-gray-100 rounded-lg border border-gray-200 p-2 text-gray-600 mt-1"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-600">Account Created</label>
+                                    <input
+                                        type="text"
+                                        value={userDetails.createdAt}
+                                        disabled
+                                        className="w-full bg-gray-100 rounded-lg border border-gray-200 p-2 text-gray-600 mt-1"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'password' && (
+                        <div>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Change Password</h2>
+                            <form onSubmit={handleChangePassword}>
+                                <label className="block text-gray-600 mb-2">Current Password</label>
+                                <PasswordInput
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    placeholder="Current Password"
+                                    className="w-full mb-4"
+                                />
+                                <label className="block text-gray-600 mb-2">New Password</label>
+                                <PasswordInput
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="New Password"
+                                    className="w-full mb-4"
+                                />
+                                <button
+                                    type="submit"
+                                    className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+                                >
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
+                    )}
+
+                    {activeTab === 'delete' && (
+                        <div>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Delete Account</h2>
+                            <p className="text-gray-600 mb-4">Deleting your account is permanent and cannot be undone. All data associated with your profile will be lost.</p>
+                            <button
+                                onClick={handleDeleteUser}
+                                className="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none"
+                            >
+                                Delete Profile
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
