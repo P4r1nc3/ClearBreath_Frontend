@@ -9,19 +9,30 @@ import PollutionCharts from './PollutionCharts';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SetViewOnClick = ({ anim }) => {
+const SetViewOnClick = ({ anim, minZoom = 8 }) => {
     const map = useMap();
+
     useEffect(() => {
         if (anim) {
-            map.flyTo([anim.lat, anim.lng], 7, {
-                animate: true,
-                duration: 1
-            });
+            const currentZoom = map.getZoom();
+            if (currentZoom < minZoom) {
+                map.flyTo([anim.lat, anim.lng], minZoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
+            else {
+                map.setView([anim.lat, anim.lng], currentZoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
         }
-    }, [anim, map]);
+    }, [anim, map, minZoom]);
 
     return null;
 };
+
 
 const Map = () => {
     const [markers, setMarkers] = useState([]);
@@ -97,8 +108,18 @@ const Map = () => {
 
     return (
         <>
-            <MapContainer center={[51.505, -0.09]} zoom={6} style={{ height: 'calc(100vh - 52px)', width: '100%' }} zoomControl={false}>
-                <TileLayer
+            <MapContainer
+                center={[51.505, -0.09]}
+                zoom={6}
+                minZoom={2}
+                maxZoom={14}
+                style={{ height: 'calc(100vh - 52px)', width: '100%'}}
+                zoomControl={false}
+                maxBounds={[[85, -179.9], [-85, 179.9]]}
+                maxBoundsViscosity={1.0}
+                worldCopyJump={false}
+            >
+            <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; ClearBreath'
                 />
@@ -114,13 +135,12 @@ const Map = () => {
             <div className={`side-panel ${panelVisible ? 'open' : ''}`}>
                 {selectedMarker && (
                     <>
-                        <div className="marker-info-header">
+                        <div className="marker-info-header pt-4 pl-5">
                             <button className="close-btn" onClick={closePanel}>&times;</button>
-                            <h3>Marker Info</h3>
-                            <p>Kontynent: {selectedMarker.continent}</p>
-                            <p>Miasto: {selectedMarker.city}</p>
-                            <p>Kraj: {selectedMarker.countryName}</p>
-                            <p>Odległość do stacji: {selectedMarker.distance.toFixed(2)} km</p>
+                            <p className="text-4xl">{selectedMarker.continent}</p>
+                            <p className="text-2xl">{selectedMarker.countryName}</p>
+                            <p className="text-xl">{selectedMarker.city}</p>
+                            <p className="text-base">{selectedMarker.distance.toFixed(2)} km</p>
                         </div>
                         <div className="marker-info-content">
                             <PollutionCharts pollutionData={pollutionData} refs={{ pm25ChartRef, pm10ChartRef, o3ChartRef }}/>

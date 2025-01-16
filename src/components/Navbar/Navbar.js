@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Auth/AuthContext';
+import { LogoutIcon } from '@heroicons/react/outline'; // Import the logout icon
 
 const Navbar = () => {
     const { loggedIn, logout } = useAuth();
@@ -19,7 +20,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-white shadow-lg">
-            <div className="mx-auto px-4 py-3 max-w-screen-xl sm:px-6 lg:px-8 max-w-screen-2xl" >
+            <div className="mx-auto px-4 py-3 max-w-screen-xl sm:px-6 lg:px-8 max-w-screen-2xl">
                 <div className="flex justify-between">
                     <div className="flex-shrink-0">
                         <Link to="/" className="text-lg text-gray-800"><span className="text-blue-400">Clear</span>Breath</Link>
@@ -27,17 +28,23 @@ const Navbar = () => {
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-4">
                             {loggedIn ? (
-                                <>
+                                <div className="flex items-center space-x-4"> {/* Apply flex and items-center for vertical centering */}
                                     <Link to="/markers" className="text-gray-800 hover:text-gray-900">Markers</Link>
                                     <Link to="/map" className="text-gray-800 hover:text-gray-900">Map</Link>
                                     <Link to="/user" className="text-gray-800 hover:text-gray-900">Account</Link>
-                                    <a href="/" className="text-gray-800 hover:text-gray-90a0" onClick={handleLogout}>Logout</a>
-                                </>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="text-gray-800 hover:text-gray-900"
+                                        aria-label="Logout"
+                                    >
+                                        <LogoutIcon className="h-5 w-5" aria-hidden="true" />
+                                    </button>
+                                </div>
                             ) : (
-                                <>
+                                <div className="flex items-center space-x-4"> {/* Same flex styling for consistent layout */}
                                     <Link to="/signin" className="text-gray-800 hover:text-gray-900">SignIn</Link>
                                     <Link to="/signup" className="text-gray-800 hover:text-gray-900">SignUp</Link>
-                                </>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -66,8 +73,13 @@ const Navbar = () => {
                             <Link to="/markers" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Markers</Link>
                             <Link to="/map" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Map</Link>
                             <Link to="/user" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Account</Link>
-                            <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out" onClick={handleLogout}>Logout</a>
-                        </>
+                            <button
+                                onClick={handleLogout}
+                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out"
+                                aria-label="Logout"
+                            >
+                                <LogoutIcon className="h-5 w-5" aria-hidden="true" />
+                            </button></>
                     )}
                 </div>
             </div>
