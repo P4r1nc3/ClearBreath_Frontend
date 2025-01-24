@@ -21,6 +21,16 @@ const PollutionCharts = ({ pollutionData }) => {
         o3: false
     });
 
+    const getAQIColor = (value) => {
+        if (value <= 33) return 'rgba(173, 216, 230, 0.7)'; // Very Good (Pastelowy błękit)
+        if (value <= 66) return 'rgba(144, 238, 144, 0.7)'; // Good (Pastelowa zieleń)
+        if (value <= 99) return 'rgba(255, 255, 200, 0.7)'; // Fair (Pastelowy żółty)
+        if (value <= 149) return 'rgba(255, 204, 153, 0.7)'; // Poor (Pastelowy pomarańczowy)
+        if (value <= 200) return 'rgba(216, 191, 216, 0.7)'; // Very Poor (Pastelowy fiolet)
+        return 'rgba(255, 182, 193, 0.7)'; // Hazardous (Pastelowy różowy)
+    };
+
+
     const createOrUpdatePollutionChart = (chartRef, chartInstanceRef, label, data) => {
         if (chartInstanceRef.current) {
             chartInstanceRef.current.destroy();
@@ -35,8 +45,8 @@ const PollutionCharts = ({ pollutionData }) => {
                     datasets: [{
                         label,
                         data: data.map(day => day.avg),
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: data.map(day => getAQIColor(day.avg)),
+                        borderColor: data.map(day => getAQIColor(day.avg).replace('0.7', '1')),
                         borderWidth: 1
                     }]
                 },
