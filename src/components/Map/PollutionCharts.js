@@ -30,7 +30,6 @@ const PollutionCharts = ({ pollutionData }) => {
         return 'rgba(255, 182, 193, 0.7)'; // Hazardous (Pastelowy różowy)
     };
 
-
     const createOrUpdatePollutionChart = (chartRef, chartInstanceRef, label, data) => {
         if (chartInstanceRef.current) {
             chartInstanceRef.current.destroy();
@@ -69,14 +68,71 @@ const PollutionCharts = ({ pollutionData }) => {
         }
     }, [pollutionData]);
 
-    // Tooltip content
+    // Tooltip content with levels and explanations
     const tooltips = {
-        pm25: 'PM 2.5 refers to fine particulate matter with a diameter of less than 2.5 micrometers. These particles can penetrate the respiratory system and are harmful to health.',
-        pm10: 'PM 10 refers to particulate matter with a diameter of 10 micrometers or less. These particles can cause respiratory issues.',
-        o3: 'O3 (Ozone) is a gas composed of three oxygen atoms. Ground-level ozone can cause various health problems, especially for people with respiratory conditions.'
+        pm25: {
+            description: 'PM 2.5 refers to fine particulate matter with a diameter of less than 2.5 micrometers. These particles can penetrate the respiratory system and are harmful to health.',
+            levels: [
+                { level: '0-33', color: 'rgba(173, 216, 230, 1)', explanation: 'Very Good' },
+                { level: '34-66', color: 'rgba(144, 238, 144, 1)', explanation: 'Good' },
+                { level: '67-99', color: 'rgba(255, 255, 200, 1)', explanation: 'Fair' },
+                { level: '100-149', color: 'rgba(255, 204, 153, 1)', explanation: 'Poor' },
+                { level: '150-200', color: 'rgba(216, 191, 216, 1)', explanation: 'Very Poor' },
+                { level: '200+', color: 'rgba(255, 182, 193, 1)', explanation: 'Hazardous' }
+            ]
+        },
+        pm10: {
+            description: 'PM 10 refers to particulate matter with a diameter of 10 micrometers or less. These particles can cause respiratory issues.',
+            levels: [
+                { level: '0-33', color: 'rgba(173, 216, 230, 1)', explanation: 'Very Good' },
+                { level: '34-66', color: 'rgba(144, 238, 144, 1)', explanation: 'Good' },
+                { level: '67-99', color: 'rgba(255, 255, 200, 1)', explanation: 'Fair' },
+                { level: '100-149', color: 'rgba(255, 204, 153, 1)', explanation: 'Poor' },
+                { level: '150-200', color: 'rgba(216, 191, 216, 1)', explanation: 'Very Poor' },
+                { level: '200+', color: 'rgba(255, 182, 193, 1)', explanation: 'Hazardous' }
+            ]
+        },
+        o3: {
+            description: 'O3 (Ozone) is a gas composed of three oxygen atoms. Ground-level ozone can cause various health problems, especially for people with respiratory conditions.',
+            levels: [
+                { level: '0-33', color: 'rgba(173, 216, 230, 1)', explanation: 'Very Good' },
+                { level: '34-66', color: 'rgba(144, 238, 144, 1)', explanation: 'Good' },
+                { level: '67-99', color: 'rgba(255, 255, 200, 1)', explanation: 'Fair' },
+                { level: '100-149', color: 'rgba(255, 204, 153, 1)', explanation: 'Poor' },
+                { level: '150-200', color: 'rgba(216, 191, 216, 1)', explanation: 'Very Poor' },
+                { level: '200+', color: 'rgba(255, 182, 193, 1)', explanation: 'Hazardous' }
+            ]
+        }
     };
 
-    // Render chart titles with tooltips
+    const renderTooltipContent = (key) => (
+        <div
+            className="absolute bg-gray-700 text-white p-4 rounded-lg w-80 text-sm shadow-lg transform -translate-x-1/2 left-1/2 top-full mt-2 z-10"
+            onMouseEnter={() => setShowTooltip(prev => ({ ...prev, [key]: true }))}
+            onMouseLeave={() => setShowTooltip(prev => ({ ...prev, [key]: false }))}
+        >
+            <p className="mb-2">{tooltips[key].description}</p>
+            <table className="table-auto w-full text-left">
+                <thead>
+                <tr>
+                    <th>AQI</th>
+                    <th>Color</th>
+                    <th>Explanation</th>
+                </tr>
+                </thead>
+                <tbody>
+                {tooltips[key].levels.map((row, index) => (
+                    <tr key={index}>
+                        <td>{row.level}</td>
+                        <td><span style={{ backgroundColor: row.color }} className="inline-block w-4 h-4 rounded-full"></span></td>
+                        <td>{row.explanation}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        </div>
+    );
+
     const renderChartTitle = (title, tooltipKey) => (
         <div className="relative text-center mb-4">
             <h3 className="inline-block">{title}</h3>
@@ -87,13 +143,7 @@ const PollutionCharts = ({ pollutionData }) => {
             >
                 <FontAwesomeIcon icon={faQuestionCircle} />
             </span>
-            {showTooltip[tooltipKey] && (
-                <div
-                    className="absolute bg-gray-700 text-white p-2 rounded-lg w-64 text-sm shadow-lg transform -translate-x-1/2 left-1/2 top-full mt-2 z-10"
-                >
-                    {tooltips[tooltipKey]}
-                </div>
-            )}
+            {showTooltip[tooltipKey] && renderTooltipContent(tooltipKey)}
         </div>
     );
 
